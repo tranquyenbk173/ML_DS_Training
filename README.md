@@ -1,7 +1,6 @@
 # ML_DS_Training
 
-Code & Data Files
+Code files start with [Training_SectionX]...
 
-ML_DS Traning
-
-[Training_SectionX]...
+My code is quite terrible :((
+After that, i will fixx it
