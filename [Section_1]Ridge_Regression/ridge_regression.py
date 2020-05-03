@@ -134,7 +134,7 @@ class RidgeReg:
             :param best_lambda:
             :param minRSS:
             :param lambda_values:
-            :return:
+            :return: best_lambda
             """
             print("Type", type(lambda_values))
             for l in lambda_values:
