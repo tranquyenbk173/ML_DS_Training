@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8f1fef6d-9482-48ea-9bd2-8823831013ef" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../[Section_1]Ridge_Regression/.idea/[Section_1]Ridge_Regression.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]Ridge_Regression/death_rate_data.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]Ridge_Regression/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]Ridge_Regression/ridge_regression.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]Ridge_Regression/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]Ridge_Regression/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/[Section_1]TF_IDF.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/other.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/preprocess.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../[Section_1]TF_IDF/utils.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1bOia2vRy0ra1TBC76lDBhfxM4g" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../[Section_1]TF_IDF" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8f1fef6d-9482-48ea-9bd2-8823831013ef" name="Default Changelist" comment="" />
+      <created>1588509609726</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1588509609726</updated>
+      <workItem from="1588509642947" duration="72000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="463" y="118" key="FileChooserDialogImpl" timestamp="1588509726702">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="463" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1588509726702" />
+  </component>
+</project>
