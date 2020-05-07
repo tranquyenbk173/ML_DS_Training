@@ -46,8 +46,8 @@ def gather_20newsgroups_data(tarFile):
         #Declare PorterStemmer object:
         stemmer = PorterStemmer()
 
-        for group in list_newsgroups:
-            label = group
+        for group_id, group in enumerate(list_newsgroups):
+            label = group_id
             group_path = parent_dir + '/' + group
             for file in listdir(group_path):
                 file_path = group_path + '/' + file
