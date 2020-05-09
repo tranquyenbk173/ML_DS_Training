@@ -1,10 +1,10 @@
 class Cluster:
     def __init__(self):
-        self._centroid = None #centroid of this cluster
-        self._members = [] #list of Member of cluster
+        self._centroid = None #centroid of this cluster - r_d vector
+        self._members = [] #list of Members of thís cluster
 
     def reset_members(self):
-        #r#reset clusters, retain only centroids
+        #reset clusters, retain only centroids
         self._members = []
 
     def add_member(self, member):

@@ -99,7 +99,7 @@ def create_vocabulary(full_data_path):
         return np.log10(corpus_size*1./doc_freq)
 
     #compute corpus size
-    with open(full_data_path) as f:
+    with open(full_data_path, encoding='utf-8', errors='ignore') as f:
         lines = f.read().splitlines()
 
     corpus_size = len(lines)
@@ -123,20 +123,20 @@ def create_vocabulary(full_data_path):
     print('Then, vocabulary size is: ', len(word_idfs))
 
     #write to file: word<fff>idf_of_word for each line
-    with open('data/word_idfs.txt', 'w') as f:
+    with open('data/full_word_idfs.txt', 'w') as f:
         f.write('\n'.join([str(word) + '<fff>' + str(idf) for word, idf in word_idfs]))
 
 
-def get_tf_idf(full_propressed_data_file, idfs_file):
+def get_tf_idf(propressed_data_file, idfs_file):
     """
     compute tf_idf of words in each document of full_data_file
     then write to file: with form: label<fff>doc_id<fff>sparse_rep
-    :param full_propressed_data_file:
+    :param propressed_data_file:
     :param idfs_file:
     :return: None
     """
     #get data from pre_computed idfs and pre-processed full data:
-    with open(idfs_file) as f:
+    with open(idfs_file, encoding='utf-8', errors='ignore') as f:
         #with each line: word<fff>idf_of_word
         word_idfs = [(line.split('<fff>')[0], float(line.split('<fff>')[1])) for line in f.read().splitlines()]
 
@@ -144,7 +144,7 @@ def get_tf_idf(full_propressed_data_file, idfs_file):
     word_IDs =  dict([(word_idfs, index) for index, word_idfs in enumerate(word_idfs)])
     word = word_idfs.keys()
 
-    with open(full_propressed_data_file) as f:
+    with open(propressed_data_file, encoding='utf-8', errors='ignore') as f:
         #with each line: label<fff>file_name<>content
         docs = [(line.split('<fff>')[0], line.split('<fff>')[1], line.split('<fff>')[2])\
                 for line in f.read().splitlines()]
@@ -178,7 +178,7 @@ def get_tf_idf(full_propressed_data_file, idfs_file):
         data_tf_idfs.append(label + '<fff>' + id + '<fff>' + sparse_rep)
 
     #then write data_tf_idfs to file:
-    with open('data/data_tf_idfs.txt', 'w') as f:
+    with open('data/test_tf_idfs.txt', 'w') as f:
         f.write('\n'.join(data_tf_idfs))
 
     print("Get TF_IDF Done!!!")
