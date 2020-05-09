@@ -32,3 +32,7 @@ if __name__ == "__main__":
     print("Result: \nSeed = ", best_seed)
     print('Purity: ', purity)
     print('Best NMI: ', max_NMI)
+    #___Result: 
+    #   Seed =  5
+    #   Purity:  0.5266369521383848
+    #   Best NMI:  0.5297722233222106
