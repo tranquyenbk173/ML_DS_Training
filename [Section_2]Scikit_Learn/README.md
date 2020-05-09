@@ -6,6 +6,6 @@
 	The clustering result writed in data/result_sklearn_KMeans.txt file, with each line:
 	
 	
-	doc_id <fff> doc_label <fff> in_which_cluster
+	doc_id, doc_label, in_which_cluster
 
 2. SVM is tried with Linear and Kernel SVM 
