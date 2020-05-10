@@ -1,9 +1,12 @@
-## KMeans
+# KMeans
 
 
 This KMeans runs with 20 clusters
-The method to initialize is random try with several seed value and choose the best one
+
+The initializing method is randomly to try with several seed values and choose the best one
 
 
 The clustering result writed in /data/result.txt file, with each line:
-doc_id <fff> doc_label <fff> in_which_cluster
+
+
+doc_id, doc_label, in_which_cluster
