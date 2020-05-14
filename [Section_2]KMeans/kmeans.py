@@ -15,8 +15,6 @@ class KMeans:
     _data: list of Members
     _label_count: default dict - label: num of doc have that label
     _iteration: num of iteration runed
-    _purity_his: history of purity
-    _NMI_his: history of NMI
 
     ______ Methods:
     load_data(self, data_path)
@@ -244,7 +242,7 @@ class KMeans:
         return I_value*2/(H_omega + H_C)
 
     def run(self, seed_value, criterion, threshold):
-        """Uk bt là unsupervised nhưng mình cx muốn nó có số cụm bằng vs số label chứ@@
+        """
         run KMeans
         :param seed_value: seed value to init clusters vs their centroids
         :param criterion: criterion for stopping
