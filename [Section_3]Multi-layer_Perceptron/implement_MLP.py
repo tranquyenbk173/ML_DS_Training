@@ -38,7 +38,8 @@ if __name__ == "__main__":
             )
 
             step +=1
-            print('step: {}, loss: {}'.format(step, loss_eval))
+            if step % 1000 == 0:
+                print('step: {}, loss: {}'.format(step, loss_eval))
 
         #save params
         trainable_variables = tf.trainable_variables()
