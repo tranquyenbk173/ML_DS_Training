@@ -40,9 +40,6 @@ if __name__ == "__main__":
             step +=1
             print('step: {}, loss: {}'.format(step, loss_eval))
 
-        #save predicted value
-        ##
-
         #save params
         trainable_variables = tf.trainable_variables()
         print("Save params!")
@@ -56,12 +53,14 @@ if __name__ == "__main__":
 
     ##evaluate with test set
     with tf.Session() as sess:
+
         #load test data
         test_data_reader = DataReader(
             data_path='datasets/test_tf_idfs.txt',
             batch_size=50,
             vocab_size=vocab_size
         )
+
         #get saved variable:
         epoch = train_data_reader._num_epoch
         for variable in trainable_variables:
@@ -69,7 +68,8 @@ if __name__ == "__main__":
             assign_op = variable.assign(saved_value)
             sess.run(assign_op)
 
-        num_true_preds = 0
+        #evaluation with whole data of test set
+        num_true_preds = 0 #num of true predictions
         while True:
             test_data, test_labels = test_data_reader.next_batch()
             test_plabes_evals = sess.run(
@@ -79,10 +79,11 @@ if __name__ == "__main__":
                     mlp._real_Y:test_labels
                 }
             )
+
             matches = np.equal(test_plabes_evals, test_labels)
             num_true_preds += np.sum(matches.astype(float))
 
-            if test_data_reader._batch_id == 0:
+            if test_data_reader._batch_id == 0: #when you checked with all test_data
                 break
 
         print("Epoch: ", epoch)
