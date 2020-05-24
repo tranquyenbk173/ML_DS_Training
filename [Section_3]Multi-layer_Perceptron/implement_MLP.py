@@ -17,13 +17,15 @@ if __name__ == "__main__":
 
     ##Open a session to run and write params to file
     with tf.Session() as sess:
+        #load train data
         train_data_reader = DataReader(
             data_path='datasets/train_tf_idfs.txt',
             batch_size=50,
             vocab_size=vocab_size
         )
-        step, MAX_STEP = 0, 1001
+        step, MAX_STEP = 0, 1000**2
 
+        #train_loops
         sess.run(tf.global_variables_initializer())
         while step < MAX_STEP:
             train_data, train_labels = train_data_reader.next_batch()
@@ -34,13 +36,14 @@ if __name__ == "__main__":
                     mlp._real_Y:train_labels
                 }
             )
-            #print("loss eval = ", loss_eval)
 
             step +=1
-            #print('step: {}, loss: {}'.format(step, loss_eval))
+            print('step: {}, loss: {}'.format(step, loss_eval))
 
-            #if step % 100 == 0:
-                #print("Write step = {}, epoch = {}".format(step, e))
+        #save predicted value
+        ##
+
+        #save params
         trainable_variables = tf.trainable_variables()
         print("Save params!")
         for variable in trainable_variables:
@@ -53,13 +56,14 @@ if __name__ == "__main__":
 
     ##evaluate with test set
     with tf.Session() as sess:
+        #load test data
         test_data_reader = DataReader(
             data_path='datasets/test_tf_idfs.txt',
             batch_size=50,
             vocab_size=vocab_size
         )
+        #get saved variable:
         epoch = train_data_reader._num_epoch
-        trainable_variables = tf.trainable_variables()
         for variable in trainable_variables:
             saved_value = restore_parameters(variable.name, epoch)
             assign_op = variable.assign(saved_value)

@@ -42,7 +42,7 @@ class DataReader:
 
     def next_batch(self):
         """
-        find the next batch, according to current batch_id
+        get the next batch, according to current batch_id
         :return: batch of data list and labels list
         """
         #generally find the start and end indexs of data
@@ -68,11 +68,12 @@ def save_parameters(name, value, epoch):
     """
     Save parameters of training process
     (At any step you want)
-    :param name:
-    :param value:
-    :param epoch:
-    :return:
+    :param name: name of variable
+    :param value: value of variable
+    :param epoch: number of saved epoch
+    :return: None
     """
+
     filename = name.replace(':', '-colon-') + '-epoch-{}.txt'.format(epoch)
     if len(value.shape) == 1: #is a list
         string_form = ','.join([str(number) for number in value])
@@ -85,9 +86,16 @@ def save_parameters(name, value, epoch):
 
 
 def restore_parameters(name, epoch):
+    """
+    Restore saved params
+    :param name: name of variable
+    :param epoch: corresponding epoch of saved variable
+    :return: value of variable
+    """
     filename = name.replace(':', '-colon-') + '-epoch-{}.txt'.format(epoch)
     with open('saved_paras/' + filename) as f:
         lines = f.read().splitlines()
+
     if len(lines) == 1: #is a vector
         value = [float(number) for number in lines[0].split(',')]
     else: #is a matrix
