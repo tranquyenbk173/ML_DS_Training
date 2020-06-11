@@ -1,3 +1,5 @@
-# To process raw data and encode ---> run `processing.py`
+## To process raw data and encode 
+---> run `processing.py`
 
-# To train and evaluate ---> run `main.py`
+## To train and evaluate 
+---> run `main.py`
