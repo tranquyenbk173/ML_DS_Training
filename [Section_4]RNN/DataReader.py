@@ -49,10 +49,13 @@ class DataReader:
         start = self._batch_id * self._batch_size
         end = start + self._batch_size
         self._batch_id +=1
+        #print("batch_size = ", end - start)
 
         #exception, at the end part of data
-        if end + self._batch_size > len(self._data):
+        if end > len(self._data):
             end = len(self._data)
+            start =  end - self._batch_size #ensure batch size
+
             self._num_epoch +=1 #increase num of epoch
             self._batch_id = 0 #reset batch_id
             #and shuffle data
