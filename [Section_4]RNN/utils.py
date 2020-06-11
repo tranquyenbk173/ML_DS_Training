@@ -184,8 +184,8 @@ def get_best_hyper_param(vocab_path, train_path, list_values):
             # (k-1) parts for train and the rest for val
             valid_X_part, valid_y_part, valid_sentence_length = X_train[valid_ids[i]], y_train[valid_ids[i]], sentence_lenght_train[valid_ids[i]]
             train_X_part, train_y_part, train_sentence_length = X_train[train_ids[i]], y_train[train_ids[i]], sentence_lenght_train[train_ids[i]]
-            Valid = zip(valid_X_part, valid_y_part, valid_sentence_length)
-            Train = zip(train_X_part, train_y_part, train_sentence_length)
+            Valid = [valid_X_part, valid_y_part, valid_sentence_length]
+            Train = [train_X_part, train_y_part, train_sentence_length]
 
             # fit and compute corresponding RSS:
             avg_error_rate += train_and_evaluate_RNN_choose_param(vocab_path, Train, Valid,
