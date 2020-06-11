@@ -13,7 +13,7 @@ if __name__ == "__main__":
     list_values = [[32, 64], [50, 50], [64, 64], [64, 128], [128, 256]]
     best_values = get_best_hyper_param(vocab_path, train_path, list_values)
 
-    #Try to run, have not tuned hyper-params yet
+    #Run run run
     lstm_size ,batch_size = best_values[0], best_values[1]
     train_and_evaluate_RNN(vocab_path, train_path, test_path,
                             lstm_size=64, batch_size=128)
