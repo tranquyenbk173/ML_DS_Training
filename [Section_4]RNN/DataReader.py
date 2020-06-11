@@ -65,3 +65,41 @@ class DataReader:
             self._data, self._labels = self._data[indices], self._labels[indices]
 
         return self._data[start:end], self._labels[start:end], self._sentence_length[start:end]
+
+
+class DataLoader:
+
+    def __init__(self, data, labels, sentence_length, batch_size):
+        self._batch_size = batch_size
+        self._data = data  # each member is a tfidf dense vector
+        self._labels = labels  # each mem is a corresponding label
+        self._sentence_length = sentence_length
+        self._num_epoch = 0  # init value of num of epochs
+        self._batch_id = 0  # init
+
+
+    def next_batch(self):
+        """
+        get the next batch, according to current batch_id
+        :return: batch of data list and labels list
+        """
+        #generally find the start and end indexs of data
+        start = self._batch_id * self._batch_size
+        end = start + self._batch_size
+        self._batch_id +=1
+        #print("batch_size = ", end - start)
+
+        #exception, at the end part of data
+        if end > len(self._data):
+            end = len(self._data)
+            start =  end - self._batch_size #ensure batch size
+
+            self._num_epoch +=1 #increase num of epoch
+            self._batch_id = 0 #reset batch_id
+            #and shuffle data
+            indices = list(range(len(self._data)))
+            random.seed(2020)
+            random.shuffle(indices)
+            self._data, self._labels = self._data[indices], self._labels[indices]
+
+        return self._data[start:end], self._labels[start:end], self._sentence_length[start:end]

@@ -127,7 +127,8 @@ class RNN:
 
 
 #Nhớ chọn LSTM_size và Batch_size qua Cross_validation
-def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
+def train_and_evaluate_RNN(vocab_path, train_path, test_path,
+                           lstm_size, batch_size):
     with open(vocab_path) as f:
         vocab_size = len(f.read().splitlines())
 
@@ -144,13 +145,13 @@ def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
 
     with tf.Session() as sess:
         train_data_reader = DataReader(
-            data_path='Processed_data/20news-train-encoded.txt',
+            data_path=train_path,
             batch_size=batch_size,
             vocab_size = vocab_size
         )
 
         test_data_reader = DataReader(
-            data_path='Processed_data/20news-test-encoded.txt',
+            data_path=test_path,
             batch_size=batch_size,
             vocab_size = vocab_size
         )
@@ -188,7 +189,7 @@ def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
                     next_test_batch = test_data_reader.next_batch()
                     test_data, test_labels, test_sentence_lengths = next_test_batch
 
-                    test_plabels_eval = sess.run(
+                    test_plabels_eval= sess.run(
                         predicted_labels,
                         feed_dict={
                             rnn._data: test_data,
@@ -207,3 +208,75 @@ def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
                 print("Epoch: ", train_data_reader._num_epoch)
                 print("Accuracy on test data: ", num_true_preds * 100. / len(test_data_reader._data))
 
+
+def train_and_evaluate_RNN_choose_param(vocab_path, train_data, valid_data,
+                           lstm_size, batch_size):
+
+    with open(vocab_path) as f:
+        vocab_size = len(f.read().splitlines())
+
+    tf.set_random_seed(2020)
+    rnn = RNN(
+        vocab_size=vocab_size,
+        embedding_size=300,
+        lstm_size=lstm_size,
+        batch_size=batch_size
+    )
+
+    predicted_labels, loss = rnn.build_graph()
+    train_op = rnn.trainer(loss=loss, learning_rate=0.01)
+
+    with tf.Session() as sess:
+
+        train_data_loader = DataLoader(train_data[0], train_data[1], train_data[2], batch_size)
+        valid_data_loader = DataLoader(valid_data[0], valid_data[1], valid_data[2], batch_size)
+
+        step = 0
+        MAX_STEP = 1000
+
+        sess.run(tf.global_variables_initializer())
+
+        while step < MAX_STEP:
+            next_train_batch = train_data_loader.next_batch()
+            train_data, train_labels, train_sentence_lengths= next_train_batch
+
+            plabels_eval, loss_eval, _ = sess.run(
+                [predicted_labels, loss, train_op],
+                feed_dict={
+                    rnn._data: train_data,
+                    rnn._labels: train_labels,
+                    rnn._sentence_lengths: train_sentence_lengths,
+                }
+            )
+            step += 1
+            if step % 20 == 0:
+                print('step: ', step, ', train_loss: ', loss_eval)
+
+
+            # Khi train xong, danh gia tren test_data
+            if step == MAX_STEP:
+                num_true_preds = 0
+
+                while True:
+                    next_test_batch = valid_data_loader.next_batch()
+                    test_data, test_labels, test_sentence_lengths = next_test_batch
+
+                    test_plabels_eval = sess.run(
+                        predicted_labels,
+                        feed_dict={
+                            rnn._data: test_data,
+                            rnn._labels: test_labels,
+                            rnn._sentence_lengths: test_sentence_lengths,
+                            #rnn._final_tokens: test_final_tokens
+                        }
+                    )
+
+                    matches = np.equal(test_plabels_eval, test_labels)
+                    num_true_preds += np.sum(matches.astype(float))
+
+                    if valid_data_loader._batch_id == 0:
+                        break
+
+                #print("Accuracy on test data: ", num_true_preds * 100. / len(test_data_reader._data))
+                error_rate = len(valid_data_loader._data) - num_true_preds
+                return error_rate
