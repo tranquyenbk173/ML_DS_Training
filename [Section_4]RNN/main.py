@@ -15,8 +15,9 @@ if __name__ == "__main__":
 
     #Run run run
     lstm_size ,batch_size = best_values[0], best_values[1]
+    print("lstm_size", lstm_size, "batch_size", batch_size)
     train_and_evaluate_RNN(vocab_path, train_path, test_path,
-                            lstm_size=64, batch_size=128)
+                            lstm_size=lstm_size, batch_size=batch_size)
 
 
 
