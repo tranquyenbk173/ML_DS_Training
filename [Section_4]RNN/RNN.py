@@ -1,9 +1,12 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
+
+MAX_DOC_LENGTH=500
 
 class RNN:
     def __init__(self, vocab_size, embedding_size, lstm_size, batch_size,
-                 pretrained_w2w_path = None, MAX_DOC_LENGTH=500):
+                 pretrained_w2w_path = None):
         self._vocab_size = vocab_size
         self._embedding_size = embedding_size
         self._batch_size = batch_size
@@ -29,14 +32,16 @@ class RNN:
             shape = (self._vocab_size + 2, self._embedding_size),
             initializer = tf.constant_initializer(pretrained_vectors)
         )
-        
-        return tf.nn.embedding_layer(self._embedding_matrix, indices)
+
+        return tf.nn.embedding_lookup(self._embedding_matrix,indices)
+        #return tf.nn.embedding_layer(self._embedding_matrix, indices)
 
 
     def LSTM_layer(self, embeddings):
-        lstm_cell = tf.contrib.rnn.BasicLSTMCell(self._lstm_size)
+        #lstm_cell = tf.contrib.rnn.BasicLSTMCell(self._lstm_size) --> not work
+        lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(self._lstm_size)
         zero_state = tf.zeros(shape = (self._batch_size, self._lstm_size))
-        initial_state = tf.contrib.rnn.LSTMStateTuple(zero_state, zero_state)
+        initial_state = tf.nn.rnn_cell.LSTMStateTuple(zero_state, zero_state)
 
         lstm_inputs = tf.unstack(
             tf.transpose(embeddings, perm=[1, 0, 2])
@@ -46,7 +51,7 @@ class RNN:
             cell = lstm_cell,
             inputs = lstm_inputs,
             initial_state=initial_state,
-            squence_length = self._sentence_lengths
+            sequence_length = self._sentence_lengths
         ) #a length-500 list of [num_docs, lstm_size]
         
         lstm_outputs = tf.unstack(
@@ -78,7 +83,7 @@ class RNN:
         return lstm_outputs_average
 
 
-    def build_graph(self, NUM_CLASSES=None):
+    def build_graph(self, NUM_CLASSES=20):
         embeddings = self.embedding_layer(self._data)
         lstm_outputs = self.LSTM_layer(embeddings)
 
@@ -111,6 +116,8 @@ class RNN:
         probs = tf.nn.softmax(logits)
         predicted_labels = tf.argmax(probs, axis = 1)
         predicted_labels = tf.squeeze(predicted_labels)
+
+        return predicted_labels, loss
 
 
     def trainer(self, loss, learning_rate):

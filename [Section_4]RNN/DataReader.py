@@ -16,6 +16,7 @@ class DataReader:
         self._batch_size = batch_size
         self._data = [] #each member is a tfidf dense vector
         self._labels = [] #each mem is a corresponding label
+        self._sentence_length = []
         self._num_epoch = 0 #init value of num of epochs
         self._batch_id = 0 #init
 
@@ -26,18 +27,17 @@ class DataReader:
 
         for data_id, line in enumerate(d_lines):
             features = line.split('<fff>')
-            label, doc_id = int(features[0]), int(features[1])
-            tokens = features[2].split()
-            vector = [0.0 for _ in range(vocab_size)] #to make dense tf-ifd vector
-            for token in tokens:
-                index, value = int(token.split(':')[0]), float(token.split(':')[1])
-                vector[index] = value
+            label, doc_id, sentence_length, tokens  = int(features[0]), int(features[1]), int(features[2]), features[3]
+            tokens = features[3].split()
+            tokens = [int(token) for token in tokens]
 
-            self._data.append(vector)
+            self._data.append(tokens)
             self._labels.append(label)
+            self._sentence_length.append(sentence_length)
 
         self._data = np.array(self._data)
         self._labels = np.array(self._labels)
+        self._sentence_length = np.array(self._sentence_length)
 
 
     def next_batch(self):
@@ -61,4 +61,4 @@ class DataReader:
             random.shuffle(indices)
             self._data, self._labels = self._data[indices], self._labels[indices]
 
-        return self._data[start:end], self._labels[start:end]
+        return self._data[start:end], self._labels[start:end], self._sentence_length[start:end]

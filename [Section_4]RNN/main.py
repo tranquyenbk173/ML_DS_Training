@@ -1,5 +1,7 @@
 from RNN import *
 from DataReader import *
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 #Nhớ chọn LSTM_size và Batch_size qua Cross_validation
 def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
@@ -20,32 +22,31 @@ def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
     with tf.Session() as sess:
         train_data_reader = DataReader(
             data_path='Processed_data/20news-train-encoded.txt',
-            batch_size=50
+            batch_size=64,
+            vocab_size = vocab_size
         )
 
-        train_data_reader = DataReader(
+        test_data_reader = DataReader(
             data_path='Processed_data/20news-test-encoded.txt',
-            batch_size=50
+            batch_size=64,
+            vocab_size = vocab_size
         )
-
-        test_data_reader = DataReader(data_path='Processed_data/20news-test-encoded.txt',
-                                      batch_size=50)
 
         step = 0
-        MAX_STEP = 10000
+        MAX_STEP = 1000
 
         sess.run(tf.global_variables_initializer())
 
         while step < MAX_STEP:
             next_train_batch = train_data_reader.next_batch()
-            train_data, train_labels, train_sentence_lengths, train_final_tokens = next_train_batch
+            train_data, train_labels, train_sentence_lengths= next_train_batch
             plabels_eval, loss_eval, _ = sess.run(
                 [predicted_labels, loss, train_op],
                 feed_dict={
                     rnn._data: train_data,
                     rnn._labels: train_labels,
                     rnn._sentence_lengths: train_sentence_lengths,
-                    rnn._final_tokens: train_final_tokens
+                    #rnn._final_tokens: train_final_tokens
                 }
             )
             step += 1
@@ -53,12 +54,12 @@ def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
                 print('loss: ', loss_eval)
 
             # Khi het 1 epoch, danh gia tren test_data
-            if train_data_reader._current_part == 0:
+            if train_data_reader._batch_id == 0:
                 num_true_preds = 0
 
                 while True:
                     next_test_batch = test_data_reader.next_batch()
-                    test_data, test_labels, test_sentence_lengths, test_final_tokens = next_test_batch
+                    test_data, test_labels, test_sentence_lengths = next_test_batch
 
                     test_plabels_eval = sess.run(
                         predicted_labels,
@@ -66,14 +67,14 @@ def train_and_evaluate_RNN(vocab_path, lstm_size, batch_size):
                             rnn._data: test_data,
                             rnn._labels: test_labels,
                             rnn._sentence_lengths: test_sentence_lengths,
-                            rnn._final_tokens: test_final_tokens
+                            #rnn._final_tokens: test_final_tokens
                         }
                     )
 
                     matches = np.equal(test_plabels_eval, test_labels)
                     num_true_preds += np.sum(matches.astype(float))
 
-                    if test_data_reader._current_part == 0:
+                    if test_data_reader._batch_id == 0:
                         break
 
                 print("Epoch: ", train_data_reader._num_epoch)
