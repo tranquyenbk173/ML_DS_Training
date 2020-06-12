@@ -157,6 +157,7 @@ def get_best_hyper_param(vocab_path, train_path, list_values):
 
         #Init hyper prams
         lstm_size, batch_size = initial_values[0], initial_values[1]
+        print("--Try with: lstm_size = ", lstm_size, " and batch_size = ", batch_size)
 
         #get train data
         with open(vocab_path) as f:
@@ -203,12 +204,12 @@ def get_best_hyper_param(vocab_path, train_path, list_values):
         """
         
         for values in list_values:
-            error_rate = cross_validation(7, initial_values=values)
+            error_rate = cross_validation(5, initial_values=values)
             if error_rate < min_error_rate:
                 min_error_rate = error_rate
                 best_values = values
                 
-        return best_values
+        return best_values, min_error_rate
     
     best_values, min_error_rate = range_scan(best_values = [32, 32], min_error_rate = 1000**2, list_values=list_values)
 

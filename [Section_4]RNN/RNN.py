@@ -4,6 +4,8 @@ import numpy as np
 from DataReader import *
 
 MAX_DOC_LENGTH=500
+MAX_STEP = 1000
+STEP_PRINT = 20
 
 class RNN:
     def __init__(self, vocab_size, embedding_size, lstm_size, batch_size,
@@ -27,12 +29,15 @@ class RNN:
         for _ in range(self._vocab_size + 1):
             pretrained_vectors.append(np.random.normal(loc=0, scale=1.,
                                                        size = self._embedding_size))
-        pretrained_vectors = np.array(pretrained_vectors)    
-        self._embedding_matrix = tf.get_variable(
-            name = 'embedding',
-            shape = (self._vocab_size + 2, self._embedding_size),
-            initializer = tf.constant_initializer(pretrained_vectors)
-        )
+        pretrained_vectors = np.array(pretrained_vectors)
+
+        #Reuse existed variable
+        with tf.variable_scope("RNN_var", reuse = tf.AUTO_REUSE) as scope:
+            self._embedding_matrix = tf.get_variable(
+                name = 'embedding',
+                shape = (self._vocab_size + 2, self._embedding_size),
+                initializer = tf.constant_initializer(pretrained_vectors)
+            )
 
         return tf.nn.embedding_lookup(self._embedding_matrix,indices)
         #return tf.nn.embedding_layer(self._embedding_matrix, indices)
@@ -88,41 +93,43 @@ class RNN:
         embeddings = self.embedding_layer(self._data)
         lstm_outputs = self.LSTM_layer(embeddings)
 
-        weights = tf.get_variable(
-            name = 'final_layer_weights',
-            shape = (self._lstm_size, NUM_CLASSES),
-            initializer = tf.random_normal_initializer(seed = 2020)
-        )
+        with tf.variable_scope("RNN_var", reuse = tf.AUTO_REUSE) as scope:
+            weights = tf.get_variable(
+                name = 'final_layer_weights',
+                shape = (self._lstm_size, NUM_CLASSES),
+                initializer = tf.random_normal_initializer(seed = 2020)
+            )
 
-        biases = tf.get_variable(
-            name = 'final_layer_biases',
-            shape = (NUM_CLASSES),
-            initializer=tf.random_normal_initializer(seed=2020)
-        )
+            biases = tf.get_variable(
+                name = 'final_layer_biases',
+                shape = (NUM_CLASSES),
+                initializer=tf.random_normal_initializer(seed=2020)
+            )
 
-        logits = tf.matmul(lstm_outputs, weights) + biases
-        
-        labels_one_hot = tf.one_hot(
-            indices = self._labels,
-            depth = NUM_CLASSES,
-            dtype = tf.float32
-        )
-        
-        loss = tf.nn.softmax_cross_entropy_with_logits(
-            labels = labels_one_hot,
-            logits = logits
-        )
-        loss = tf.reduce_mean(loss)
-        
-        probs = tf.nn.softmax(logits)
-        predicted_labels = tf.argmax(probs, axis = 1)
-        predicted_labels = tf.squeeze(predicted_labels)
+            logits = tf.matmul(lstm_outputs, weights) + biases
+
+            labels_one_hot = tf.one_hot(
+                indices = self._labels,
+                depth = NUM_CLASSES,
+                dtype = tf.float32
+            )
+
+            loss = tf.nn.softmax_cross_entropy_with_logits(
+                labels = labels_one_hot,
+                logits = logits
+            )
+            loss = tf.reduce_mean(loss)
+
+            probs = tf.nn.softmax(logits)
+            predicted_labels = tf.argmax(probs, axis = 1)
+            predicted_labels = tf.squeeze(predicted_labels)
 
         return predicted_labels, loss
 
 
     def trainer(self, loss, learning_rate):
-        train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+        with tf.variable_scope("RNN_var", reuse = tf.AUTO_REUSE) as scope:
+            train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
         return train_op
 
 
@@ -133,6 +140,7 @@ def train_and_evaluate_RNN(vocab_path, train_path, test_path,
         vocab_size = len(f.read().splitlines())
 
     tf.set_random_seed(2020)
+    tf.reset_default_graph()
     rnn = RNN(
         vocab_size=vocab_size,
         embedding_size=300,
@@ -157,7 +165,6 @@ def train_and_evaluate_RNN(vocab_path, train_path, test_path,
         )
 
         step = 0
-        MAX_STEP = 1000
 
         sess.run(tf.global_variables_initializer())
 
@@ -177,7 +184,7 @@ def train_and_evaluate_RNN(vocab_path, train_path, test_path,
                 }
             )
             step += 1
-            if step % 20 == 0:
+            if step % STEP_PRINT == 0:
                 print('step: ', step, ', loss: ', loss_eval)
 
 
@@ -216,6 +223,7 @@ def train_and_evaluate_RNN_choose_param(vocab_path, train_data, valid_data,
         vocab_size = len(f.read().splitlines())
 
     tf.set_random_seed(2020)
+    tf.reset_default_graph() #### Put here to reset computational graph
     rnn = RNN(
         vocab_size=vocab_size,
         embedding_size=300,
@@ -232,7 +240,6 @@ def train_and_evaluate_RNN_choose_param(vocab_path, train_data, valid_data,
         valid_data_loader = DataLoader(valid_data[0], valid_data[1], valid_data[2], batch_size)
 
         step = 0
-        MAX_STEP = 1000
 
         sess.run(tf.global_variables_initializer())
 
@@ -249,7 +256,7 @@ def train_and_evaluate_RNN_choose_param(vocab_path, train_data, valid_data,
                 }
             )
             step += 1
-            if step % 20 == 0:
+            if step % STEP_PRINT == 0:
                 print('step: ', step, ', train_loss: ', loss_eval)
 
 
